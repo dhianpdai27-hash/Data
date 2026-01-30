@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi Posyandu</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2e7d32">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{margin:0;font-family:Segoe UI,sans-serif;background:#f4f6f8}
+header{background:#2e7d32;color:#fff;padding:15px;text-align:center}
+nav{display:flex;background:#fff}
+nav button{flex:1;padding:12px;border:none;background:none;font-weight:bold}
+nav button.active{color:#2e7d32;border-bottom:3px solid #2e7d32}
+section{display:none;padding:15px}
+section.active{display:block}
+.card{background:#fff;border-radius:10px;padding:15px;margin-bottom:15px}
+input,select,textarea{width:100%;padding:10px;margin:5px 0}
+button.primary{background:#2e7d32;color:#fff;padding:10px;border:none;border-radius:8px;width:100%}
+</style>
+</head>
+<body>
+<header>
+<h2 id="namaPosyandu">POSYANDU MAJU SEHAT</h2>
+<small id="alamatPosyandu">Desa Contoh</small>
+</header>
+<nav>
+<button class="active" onclick="showTab('data')">Data</button>
+<button onclick="showTab('periksa')">Pemeriksaan</button>
+<button onclick="showTab('riwayat')">Riwayat</button>
+<button onclick="showTab('pengaturan')">Pengaturan</button>
+</nav>
+
+<section id="data" class="active">
+<div class="card">
+<h3>Data Awal</h3>
+<select id="kategori"><option>Balita</option><option>Remaja</option><option>Pra Lansia</option><option>Lansia</option></select>
+<input id="nik" placeholder="NIK">
+<input id="nama" placeholder="Nama">
+<input id="nokk" placeholder="No KK">
+<input id="ortu" placeholder="Nama Orang Tua">
+<input id="alamat" placeholder="Alamat">
+<input type="date" id="tgl">
+<button class="primary" onclick="simpan()">Simpan</button>
+</div>
+</section>
+
+<section id="periksa">
+<div class="card">
+<h3>Pemeriksaan</h3>
+<input id="nikCari" placeholder="NIK">
+<button class="primary" onclick="cari()">Cari</button>
+<div id="hasil"></div>
+<input id="bb" placeholder="Berat Badan">
+<input id="tb" placeholder="Tinggi Badan">
+<button class="primary" onclick="simpanPeriksa()">Simpan Pemeriksaan</button>
+</div>
+</section>
+
+<section id="riwayat">
+<div class="card">
+<h3>Riwayat</h3>
+<table id="tabel"></table>
+</div>
+</section>
+
+<section id="pengaturan">
+<div class="card">
+<h3>Pengaturan</h3>
+<input id="setNama" placeholder="Nama Posyandu">
+<input id="setAlamat" placeholder="Alamat">
+<button class="primary" onclick="simpanSetting()">Simpan</button>
+</div>
+</section>
+
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('service-worker.js')}
+let data=JSON.parse(localStorage.getItem('data')||'[]')
+let periksa=JSON.parse(localStorage.getItem('periksa')||'[]')
+function showTab(id){document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function simpan(){data.push({nik:nik.value,nama:nama.value});localStorage.setItem('data',JSON.stringify(data));alert('tersimpan')}
+function cari(){let d=data.find(x=>x.nik===nikCari.value);hasil.innerHTML=d?d.nama:'tidak ada'}
+function simpanPeriksa(){periksa.push({nik:nikCari.value,bb:bb.value,tb:tb.value});localStorage.setItem('periksa',JSON.stringify(periksa));alert('ok')}
+function simpanSetting(){namaPosyandu.innerText=setNama.value;alamatPosyandu.innerText=setAlamat.value}
+</script>
+</body>
+</html>
